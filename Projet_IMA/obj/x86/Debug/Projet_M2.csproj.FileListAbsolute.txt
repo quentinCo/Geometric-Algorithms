@@ -1,0 +1,9 @@
+C:\Users\student\Documents\geo\Projet_IMA\bin\Debug\Projet_IMA.exe.config
+C:\Users\student\Documents\geo\Projet_IMA\bin\Debug\Projet_IMA.exe
+C:\Users\student\Documents\geo\Projet_IMA\bin\Debug\Projet_IMA.pdb
+C:\Users\student\Documents\geo\Projet_IMA\obj\x86\Debug\Projet_M2.csprojResolveAssemblyReference.cache
+C:\Users\student\Documents\geo\Projet_IMA\obj\x86\Debug\Projet_IMA.Form1.resources
+C:\Users\student\Documents\geo\Projet_IMA\obj\x86\Debug\Projet_IMA.Properties.Resources.resources
+C:\Users\student\Documents\geo\Projet_IMA\obj\x86\Debug\Projet_M2.csproj.GenerateResource.Cache
+C:\Users\student\Documents\geo\Projet_IMA\obj\x86\Debug\Projet_IMA.exe
+C:\Users\student\Documents\geo\Projet_IMA\obj\x86\Debug\Projet_IMA.pdb
