@@ -39,8 +39,8 @@ namespace Projet_IMA
 
             for(int i = 1; i < points.Count; ++i)
             {
-                V2 leftMost = newP - extremPoint;   // Vecteur supposé le plus à gauche.
-                V2 tempVector = points[i] - extremPoint;    // Vecteur à tester.
+                V2 leftMost = extremPoint - newP;   // Vecteur supposé le plus à gauche.
+                V2 tempVector = extremPoint - points[i];    // Vecteur à tester.
 
                 BigInteger prodVec = leftMost ^ tempVector;
                 if (newP.Equals(extremPoint) || prodVec > 0 || (prodVec == 0 && (leftMost.Norme2() < tempVector.Norme2())))

@@ -25,8 +25,6 @@ namespace Projet_IMA
            Affichage.RefreshScreen();
            Affichage.DrawSet(LP,Color.Blue);
            Affichage.Show();
-            
-           
         }
 
         public static void ScenarioTest()
