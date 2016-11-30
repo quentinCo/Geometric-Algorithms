@@ -7,3 +7,12 @@ C:\Users\student\Documents\geo\Projet_IMA\obj\x86\Debug\Projet_IMA.Properties.Re
 C:\Users\student\Documents\geo\Projet_IMA\obj\x86\Debug\Projet_M2.csproj.GenerateResource.Cache
 C:\Users\student\Documents\geo\Projet_IMA\obj\x86\Debug\Projet_IMA.exe
 C:\Users\student\Documents\geo\Projet_IMA\obj\x86\Debug\Projet_IMA.pdb
+U:\Documents\git\Geometric-Algorithms\Projet_IMA\bin\Debug\Projet_IMA.exe.config
+U:\Documents\git\Geometric-Algorithms\Projet_IMA\obj\x86\Debug\Projet_IMA.exe
+U:\Documents\git\Geometric-Algorithms\Projet_IMA\obj\x86\Debug\Projet_IMA.pdb
+U:\Documents\git\Geometric-Algorithms\Projet_IMA\bin\Debug\Projet_IMA.exe
+U:\Documents\git\Geometric-Algorithms\Projet_IMA\bin\Debug\Projet_IMA.pdb
+U:\Documents\git\Geometric-Algorithms\Projet_IMA\obj\x86\Debug\Projet_M2.csprojResolveAssemblyReference.cache
+U:\Documents\git\Geometric-Algorithms\Projet_IMA\obj\x86\Debug\Projet_IMA.Form1.resources
+U:\Documents\git\Geometric-Algorithms\Projet_IMA\obj\x86\Debug\Projet_IMA.Properties.Resources.resources
+U:\Documents\git\Geometric-Algorithms\Projet_IMA\obj\x86\Debug\Projet_M2.csproj.GenerateResource.Cache

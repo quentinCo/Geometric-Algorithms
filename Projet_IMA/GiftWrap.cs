@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Drawing;
+using System.Numerics;
 
 namespace Projet_IMA
 {
     class GiftWrap
     {
-        static public List<V2> HP = new List<V2>();
+        static public List<V2> HP;
 
         static public void start()
         {
@@ -41,9 +42,8 @@ namespace Projet_IMA
                 V2 leftMost = newP - extremPoint;   // Vecteur supposé le plus à gauche.
                 V2 tempVector = points[i] - extremPoint;    // Vecteur à tester.
 
-                if (newP.Equals(extremPoint) || (leftMost ^ tempVector) > 0)
-                    newP = points[i];
-                else if ((leftMost ^ tempVector) == 0 && (leftMost.Norme2() < tempVector.Norme2()))
+                BigInteger prodVec = leftMost ^ tempVector;
+                if (newP.Equals(extremPoint) || prodVec > 0 || (prodVec == 0 && (leftMost.Norme2() < tempVector.Norme2())))
                     newP = points[i];
             }
             HP.Add(newP);
