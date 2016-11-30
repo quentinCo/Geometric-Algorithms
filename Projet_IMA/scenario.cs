@@ -111,7 +111,7 @@ namespace Projet_IMA
         static V2[] Peigne =  { new V2(1, 1), new V2(1, 3), new V2(2,3), new V2(2, 2),
                                     new V2(3, 2), new V2(3, 3), new V2(4,3), new V2(4,2),
                                     new V2(5, 2), new V2(5, 3), new V2(6,3), new V2(6,2),
-                                    new V2(7,2),  new V2(7,3) , new V2(8,3), new V2(8,3), 
+                                    new V2(7,2),  new V2(7,3) , new V2(8,3), 
                                     new V2(8,0), new V2(7,0), new V2(7,1), new V2(6,1),
                                     new V2(6,0), new V2(5,0),  new V2(5,1), new V2(4,1),
                                     new V2(4,0), new V2(1,0)
