@@ -28,9 +28,7 @@ namespace Projet_IMA
 
         private void button1_Click(object sender, EventArgs e)
         {
-          
             SetofPoints.RandomTest();
-                 
         }
  
 
@@ -61,7 +59,7 @@ namespace Projet_IMA
 
         private void button7_Click(object sender, EventArgs e)
         {
-
+            QuickHull.start();
         }
 
         private void TestOperateur(object sender, EventArgs e)
@@ -74,6 +72,11 @@ namespace Projet_IMA
             BigInteger p = k * t * 2;
             BigInteger n = t ^ r;
             V2 m = -t;
+        }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            QuickHull.Iteration();
         }
     }
 }

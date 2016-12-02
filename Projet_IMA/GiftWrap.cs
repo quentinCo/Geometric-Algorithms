@@ -18,10 +18,10 @@ namespace Projet_IMA
             HP = new List<V2>();
             V2 initPoint = points[0];
             foreach (V2 point in points)
-                if (initPoint.x > point.x)
+            {
+                if (initPoint.x > point.x || (initPoint.x == point.x && initPoint.y > point.y))
                     initPoint = point;
-                else if (initPoint.x == point.x && initPoint.y > point.y)
-                    initPoint = point;
+            }                
 
             HP.Add(initPoint);
         }
