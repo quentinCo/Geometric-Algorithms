@@ -9,28 +9,30 @@ namespace Projet_IMA
 {
     class MelkMan
     {
-        static private int currentIndex;
-        static public LinkedList<V2> HP;
+        static private int currentIndex;        // Index du prochain point à traiter
+        static public LinkedList<V2> convexHull;
         
         static public void start()
         {
             Console.WriteLine("Sart_MelkMan");
+
             List<V2> points = SetofPoints.LP;
-            List<V2> tempInitPoints = new List<V2>(); //    Utiliser pour le trie horaire
+            List<V2> toSortPoints = new List<V2>();         // Utiliser pour le trier les points dans le sens horaire (1 scénario n'est pas ordonné)
 
             /*for (int i = 0; i < 3; ++i)
                 HP.AddLast(points[i]);*/
                 
             for (int i = 0; i < 3; ++i)
-                tempInitPoints.Add(points[i]);
+                toSortPoints.Add(points[i]);
 
-            tempInitPoints = tempInitPoints.OrderBy(point => point.x).ThenBy(point => point.y).ToList<V2>();
+            toSortPoints = toSortPoints.OrderBy(point => point.x).ThenBy(point => point.y).ToList<V2>();
 
-            HP = new LinkedList<V2>(tempInitPoints);
-            HP.AddLast(HP.First());
+            convexHull = new LinkedList<V2>(toSortPoints);
+            convexHull.AddLast(convexHull.First());         // Copie du premier en dernier pour simuler la structure de boucle
 
             currentIndex = 3;
-            Affichage.DrawPolChain(HP.ToList<V2>(), Color.Red);
+
+            Affichage.DrawPolChain(convexHull.ToList<V2>(), Color.Red);
             Affichage.Show();
         }
 
@@ -38,47 +40,50 @@ namespace Projet_IMA
         static public void Iteration()
         {
             Console.WriteLine("Iteration_MelkMan");
+
             List<V2> points = SetofPoints.LP;
-            if (currentIndex == points.Count)
+            if (currentIndex == points.Count)       // Verifie s'il reste des points à traiter
                 return;
 
-            int initSize = HP.Count();
+            int initialSize = convexHull.Count();   // Taille de l'enveloppe avant ajout d'un nouveau point
 
-            LinkedListNode<V2> first = HP.First;
-            LinkedListNode<V2> last = HP.Last;
-            V2 leftVector = first.Value - first.Next.Value;  // Debut liste
-            V2 rightVector = last.Value - last.Previous.Value; // Fin liste
+            LinkedListNode<V2> first = convexHull.First;
+            LinkedListNode<V2> last = convexHull.Last;
+            V2 leftVector = first.Next.Value - first.Value;     // Vecteur à gauche du dernier point
+            V2 rightVector = last.Previous.Value - last.Value;  // Vecteur à droite du dernier point
 
-            while (currentIndex != points.Count)
+            while (currentIndex != points.Count)    // On parcours les points de l'essemble LP tant qu'un point n'a pas été ajouté à l'enveloppe
             {
                 Console.WriteLine("CurrentIndex_Iteration");
 
-                V2 tempLeftVector = first.Value - points[currentIndex]; // Supposé gauche liste
-                V2 tempRightVector = last.Value - points[currentIndex]; // Supposé droite liste
+                V2 tempLeftVector = points[currentIndex] - first.Value; // Supposé gauche liste
+                V2 tempRightVector = points[currentIndex] - last.Value; // Supposé droite liste
+
                 BigInteger prodVecLeft = tempLeftVector ^ leftVector;
                 BigInteger prodVecRight = tempRightVector ^ rightVector;
 
                 if(prodVecLeft < 0 || prodVecRight > 0)
                 {
-                    while (prodVecLeft < 0)
+                    while (prodVecLeft < 0)     // Tant que le nouveau point peut être placé à gauche
                     {
-                        HP.RemoveFirst();
-                        first = HP.First;
+                        convexHull.RemoveFirst();
+                        first = convexHull.First;
                         leftVector = first.Value - first.Next.Value;
                         tempLeftVector = first.Value - points[currentIndex];
                         prodVecLeft = tempLeftVector ^ leftVector;
                     }
-                    HP.AddFirst(points[currentIndex]);
+                    convexHull.AddFirst(points[currentIndex]);
 
-                    while(prodVecRight > 0)
+                    while(prodVecRight > 0) // Tant que le nouveau point peut être placé à droite
                     {
-                        HP.RemoveLast();
-                        last = HP.Last;
+                        convexHull.RemoveLast();
+                        last = convexHull.Last;
                         rightVector = last.Value - last.Previous.Value;
                         tempRightVector = last.Value - points[currentIndex];
                         prodVecRight = tempRightVector ^ rightVector;
                     }
-                    HP.AddLast(points[currentIndex]);
+                    convexHull.AddLast(points[currentIndex]);
+                    currentIndex++;
                     break;
                 }
                 currentIndex++;
@@ -87,8 +92,7 @@ namespace Projet_IMA
             /* Draw */
             Affichage.RefreshScreen();
             Affichage.DrawSet(SetofPoints.LP, Color.Blue);
-            Affichage.DrawPolChain(SetofPoints.LP, Color.Green);
-            Affichage.DrawPolChain(HP.ToList<V2>(), Color.Red);
+            Affichage.DrawPolChain(convexHull.ToList<V2>(), Color.Red);
             Affichage.Show();
         }
     }

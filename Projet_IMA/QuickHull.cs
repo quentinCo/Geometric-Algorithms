@@ -9,14 +9,16 @@ namespace Projet_IMA
 {
     class QuickHull
     {
-        static public LinkedList<V2> HP;
-        static private LinkedList<Tuple<Tuple<LinkedListNode<V2>, LinkedListNode<V2>>, List<V2>>> setToProcess; // List pair axe et set de point
+        static public LinkedList<V2> convexHull;
+        static private LinkedList<Tuple<Tuple<LinkedListNode<V2>, LinkedListNode<V2>>, List<V2>>> setToProcess; // List pair cote de l'enveloppe et set de point
 
         static public void start()
         {
             Console.WriteLine("Start_QuickHull");
+
             List<V2> points = SetofPoints.LP;
-            HP = new LinkedList<V2>();
+
+            convexHull = new LinkedList<V2>();
             setToProcess = new LinkedList<Tuple<Tuple<LinkedListNode<V2>, LinkedListNode<V2>>, List<V2>>>();
 
             V2 minXPoint = points[0];
@@ -31,73 +33,67 @@ namespace Projet_IMA
                     maxXPoint = point;
             }
 
-            HP.AddFirst(maxXPoint);
-            HP.AddFirst(minXPoint);
+            convexHull.AddFirst(maxXPoint);
+            convexHull.AddFirst(minXPoint);
 
-            Tuple<LinkedListNode<V2>, LinkedListNode<V2>> pairPoints = new Tuple<LinkedListNode<V2>, LinkedListNode<V2>>(HP.First, HP.Last);
-            List<V2> newSet = SplitSet(minXPoint, maxXPoint, points);
-            if(newSet.Count > 0)
-                setToProcess.AddFirst(new Tuple<Tuple<LinkedListNode<V2>, LinkedListNode<V2>>, List<V2>>(pairPoints, newSet));
+            addSetToSetToPrecess(convexHull.First, convexHull.Last, points);
+            addSetToSetToPrecess(convexHull.Last, convexHull.First, points);
 
-            pairPoints = new Tuple<LinkedListNode<V2>, LinkedListNode<V2>>(HP.Last, HP.First);
-            newSet = SplitSet(maxXPoint, minXPoint, points);
-            if (newSet.Count > 0)
-                setToProcess.AddFirst(new Tuple<Tuple<LinkedListNode<V2>, LinkedListNode<V2>>, List<V2>>(pairPoints, newSet));
+            convexHull.AddLast(convexHull.First.Value); // Pour créer la boucle
 
-            HP.AddLast(HP.First.Value);
-
-            Affichage.DrawPolChain(HP.ToList<V2>(), Color.Red);
+            Affichage.DrawPolChain(convexHull.ToList<V2>(), Color.Red);
             Affichage.Show();
         }
 
 
         static public void Iteration()
         {
-            if (setToProcess.Count == 0)
+            if (setToProcess.Count == 0)    // Tant qu'il y a des ensembles de point à traiter
                 return;
             
             Console.WriteLine("Iteration_QuickHull");
 
-            Tuple<Tuple<LinkedListNode<V2>, LinkedListNode<V2>>, List<V2>> pairToProcess = setToProcess.First();
-            Tuple<LinkedListNode<V2>, LinkedListNode<V2>> pointsMainVector = pairToProcess.Item1;
-            List<V2> points = pairToProcess.Item2;
+            Tuple<Tuple<LinkedListNode<V2>, LinkedListNode<V2>>, List<V2>> pairToProcess = setToProcess.First();    // Récupération du coté et des points à traiter.
+            Tuple<LinkedListNode<V2>, LinkedListNode<V2>> pointsMainVector = pairToProcess.Item1;                   // Récupération des points composant le coté.
+            List<V2> points = pairToProcess.Item2;                                                                  // Récupération des l'ensemble où peut être le nouveau point
 
-            V2 furthestPoint = findFurthestPoint(pointsMainVector.Item1.Value, pointsMainVector.Item2.Value, points);
+            V2 furthestPoint = findFurthestPoint(pointsMainVector.Item1.Value, pointsMainVector.Item2.Value, points);   // Point le plus éloigner de la droite.
 
-            List<V2> newSet1 = SplitSet(pointsMainVector.Item1.Value, furthestPoint, points);
-            List<V2> newSet2 = SplitSet(furthestPoint, pointsMainVector.Item2.Value, points);
-
-            LinkedListNode<V2> furtherPointNode = HP.AddAfter(pointsMainVector.Item1, furthestPoint);
+            LinkedListNode<V2> furtherPointNode = convexHull.AddAfter(pointsMainVector.Item1, furthestPoint);       // Ajout du point entre les points délimitant le coté.
 
             setToProcess.RemoveFirst();
 
-            Tuple<LinkedListNode<V2>, LinkedListNode<V2>> pairPoints;
-            if (newSet2.Count > 0)
-            {
-                pairPoints = new Tuple<LinkedListNode<V2>, LinkedListNode<V2>>(furtherPointNode, pointsMainVector.Item2);
-                setToProcess.AddFirst(new Tuple<Tuple<LinkedListNode<V2>, LinkedListNode<V2>>, List<V2>>(pairPoints, newSet2));
-            }
+            addSetToSetToPrecess(furtherPointNode, pointsMainVector.Item2, points);     // Ajout d'un nouveau set à traiter et coté.
+            addSetToSetToPrecess(pointsMainVector.Item1, furtherPointNode, points);
 
-            if (newSet1.Count > 0)
-            {
-                pairPoints = new Tuple<LinkedListNode<V2>, LinkedListNode<V2>>(pointsMainVector.Item1, furtherPointNode);
-                setToProcess.AddFirst(new Tuple<Tuple<LinkedListNode<V2>, LinkedListNode<V2>>, List<V2>>(pairPoints, newSet1));
-            }
-            
-            Affichage.DrawPolChain(HP.ToList<V2>(), Color.Red);
+            /* Draw */
+            Affichage.RefreshScreen();
+            Affichage.DrawSet(SetofPoints.LP, Color.Blue);
+            Affichage.DrawPolChain(convexHull.ToList<V2>(), Color.Red);
             Affichage.Show();
         }
 
-        /* Separation des groupes de point droite */
-        static private List<V2> SplitSet(V2 mp1, V2 mp2, List<V2> points)
+        /* Ajout d'une association coté - ensemble */
+        static private void addSetToSetToPrecess(LinkedListNode<V2> mp1, LinkedListNode<V2> mp2, List<V2> points)
         {
-            List<V2> res = new List<V2>();
-            V2 mainVector = mp2 - mp1;
+            Tuple<LinkedListNode<V2>, LinkedListNode<V2>> pairPoints = new Tuple<LinkedListNode<V2>, LinkedListNode<V2>>(mp1, mp2);
+            List<V2> newSet = splitSet(mp1.Value, mp2.Value, points);
+
+            if (newSet.Count > 0)
+                setToProcess.AddFirst(new Tuple<Tuple<LinkedListNode<V2>, LinkedListNode<V2>>, List<V2>>(pairPoints, newSet));
+        }
+
+        /* Separation des groupes de point droite */
+        static private List<V2> splitSet(V2 mp1, V2 mp2, List<V2> points)
+        {
+            List<V2> res = new List<V2>();  // Points restant à traiter.
+            V2 mainVector = mp2 - mp1;      // Nouveau coté de l'enveloppe
+
             foreach(V2 point in points)
             {
                 V2 vector = point - mp1;
                 BigInteger prodVec = vector ^ mainVector;
-                if (prodVec < 0)
+                if (prodVec > 0)
                     res.Add(point);
             }
             return res;
@@ -108,11 +104,12 @@ namespace Projet_IMA
         {
             V2 mainVector = mp2 - mp1;
             V2 furthestPoint = points[0];
-            double maxDistance = distanceFromMainVector(mainVector, furthestPoint);
+
+            double maxDistance = distanceFromMainVector(mp1, mainVector, furthestPoint);
 
             foreach (V2 point in points)
             {
-                double distance = distanceFromMainVector(mainVector, point);
+                double distance = distanceFromMainVector(mp1, mainVector, point);
                 if(distance > maxDistance)
                 {
                     furthestPoint = point;
@@ -123,11 +120,13 @@ namespace Projet_IMA
             return furthestPoint;
         }
 
-        static private double distanceFromMainVector(V2 mainVector, V2 point)
+        static private double distanceFromMainVector(V2 firstMainPoint, V2 mainVector, V2 point)
         {
             // ax + by + c -> V(b; -a)
-            double sqrt = Math.Exp( 0.5 * BigInteger.Log(mainVector.y * mainVector.y + mainVector.x * mainVector.x));
-            return ((int)BigInteger.Abs(mainVector.y * point.x - mainVector.x * point.y)) / sqrt;
+            double numerator = (double)BigInteger.Abs(mainVector.x * (firstMainPoint.y - point.y) - mainVector.y * (firstMainPoint.x - point.x));
+            double denominator = Math.Sqrt((double)(mainVector.x * mainVector.x + mainVector.y * mainVector.y));
+
+            return numerator / denominator;
         }
     }
 }
