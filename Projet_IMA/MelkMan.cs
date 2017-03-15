@@ -17,7 +17,7 @@ namespace Projet_IMA
             Console.WriteLine("Sart_MelkMan");
 
             List<V2> points = SetofPoints.LP;
-            List<V2> toSortPoints = new List<V2>();         // Utiliser pour le trier les points dans le sens horaire (1 scénario n'est pas ordonné)
+            List<V2> toSortPoints = new List<V2>();         // Utiliser pour trier les points dans le sens horaire (1 scénario probleme d'ordre)
 
             /*for (int i = 0; i < 3; ++i)
                 HP.AddLast(points[i]);*/
@@ -25,7 +25,7 @@ namespace Projet_IMA
             for (int i = 0; i < 3; ++i)
                 toSortPoints.Add(points[i]);
 
-            toSortPoints = toSortPoints.OrderBy(point => point.x).ThenBy(point => point.y).ToList<V2>();
+            toSortPoints = toSortPoints.OrderBy(point => point.x).ThenBy(point => point.y).ToList<V2>();    // Trie
 
             convexHull = new LinkedList<V2>(toSortPoints);
             convexHull.AddLast(convexHull.First());         // Copie du premier en dernier pour simuler la structure de boucle
@@ -52,12 +52,14 @@ namespace Projet_IMA
             V2 leftVector = first.Next.Value - first.Value;     // Vecteur à gauche du dernier point
             V2 rightVector = last.Previous.Value - last.Value;  // Vecteur à droite du dernier point
 
-            while (currentIndex != points.Count)    // On parcours les points de l'essemble LP tant qu'un point n'a pas été ajouté à l'enveloppe
+            bool again = true;
+
+            while (again && currentIndex != points.Count)    // On parcours les points de l'essemble LP tant qu'un point n'a pas été ajouté à l'enveloppe et que tous n'ont pas été parcouru.
             {
                 Console.WriteLine("CurrentIndex_Iteration");
 
-                V2 tempLeftVector = points[currentIndex] - first.Value; // Supposé gauche liste
-                V2 tempRightVector = points[currentIndex] - last.Value; // Supposé droite liste
+                V2 tempLeftVector = points[currentIndex] - first.Value; // Vecteur à comparer à leftVector
+                V2 tempRightVector = points[currentIndex] - last.Value; // Vecteur à comparer à rightVector
 
                 BigInteger prodVecLeft = tempLeftVector ^ leftVector;
                 BigInteger prodVecRight = tempRightVector ^ rightVector;
@@ -83,8 +85,7 @@ namespace Projet_IMA
                         prodVecRight = tempRightVector ^ rightVector;
                     }
                     convexHull.AddLast(points[currentIndex]);
-                    currentIndex++;
-                    break;
+                    again = false;
                 }
                 currentIndex++;
             }
@@ -92,6 +93,7 @@ namespace Projet_IMA
             /* Draw */
             Affichage.RefreshScreen();
             Affichage.DrawSet(SetofPoints.LP, Color.Blue);
+            Affichage.DrawPolChain(SetofPoints.LP, Color.Green);
             Affichage.DrawPolChain(convexHull.ToList<V2>(), Color.Red);
             Affichage.Show();
         }

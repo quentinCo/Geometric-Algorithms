@@ -10,7 +10,7 @@ namespace Projet_IMA
     class QuickHull
     {
         static public LinkedList<V2> convexHull;
-        static private LinkedList<Tuple<Tuple<LinkedListNode<V2>, LinkedListNode<V2>>, List<V2>>> setToProcess; // List pair cote de l'enveloppe et set de point
+        static private LinkedList<Tuple<Tuple<LinkedListNode<V2>, LinkedListNode<V2>>, List<V2>>> setToProcess; // List pair cote de l'enveloppe et set de point (LinkedListNode pour facilité l'insertion)
 
         static public void start()
         {
@@ -55,7 +55,7 @@ namespace Projet_IMA
 
             Tuple<Tuple<LinkedListNode<V2>, LinkedListNode<V2>>, List<V2>> pairToProcess = setToProcess.First();    // Récupération du coté et des points à traiter.
             Tuple<LinkedListNode<V2>, LinkedListNode<V2>> pointsMainVector = pairToProcess.Item1;                   // Récupération des points composant le coté.
-            List<V2> points = pairToProcess.Item2;                                                                  // Récupération des l'ensemble où peut être le nouveau point
+            List<V2> points = pairToProcess.Item2;                                                                  // Récupération de l'ensemble où peut être le nouveau point
 
             V2 furthestPoint = findFurthestPoint(pointsMainVector.Item1.Value, pointsMainVector.Item2.Value, points);   // Point le plus éloigner de la droite.
 
@@ -69,6 +69,7 @@ namespace Projet_IMA
             /* Draw */
             Affichage.RefreshScreen();
             Affichage.DrawSet(SetofPoints.LP, Color.Blue);
+            //Affichage.DrawPolChain(SetofPoints.LP, Color.Green);
             Affichage.DrawPolChain(convexHull.ToList<V2>(), Color.Red);
             Affichage.Show();
         }
@@ -77,7 +78,7 @@ namespace Projet_IMA
         static private void addSetToSetToPrecess(LinkedListNode<V2> mp1, LinkedListNode<V2> mp2, List<V2> points)
         {
             Tuple<LinkedListNode<V2>, LinkedListNode<V2>> pairPoints = new Tuple<LinkedListNode<V2>, LinkedListNode<V2>>(mp1, mp2);
-            List<V2> newSet = splitSet(mp1.Value, mp2.Value, points);
+            List<V2> newSet = splitSet(mp1.Value, mp2.Value, points);   // Séparation point extérieur et intérieur de l'enveloppe.
 
             if (newSet.Count > 0)
                 setToProcess.AddFirst(new Tuple<Tuple<LinkedListNode<V2>, LinkedListNode<V2>>, List<V2>>(pairPoints, newSet));
@@ -120,9 +121,12 @@ namespace Projet_IMA
             return furthestPoint;
         }
 
+        /*Retourne la distance d'un point à un droite.
+         * firstMainPoint: un point du coté de l'enveloppe traité.
+         * mainVector: coté de l'enveloppe correspondant à un droite -> ax + by + c -> V(b; -a)
+         */
         static private double distanceFromMainVector(V2 firstMainPoint, V2 mainVector, V2 point)
         {
-            // ax + by + c -> V(b; -a)
             double numerator = (double)BigInteger.Abs(mainVector.x * (firstMainPoint.y - point.y) - mainVector.y * (firstMainPoint.x - point.x));
             double denominator = Math.Sqrt((double)(mainVector.x * mainVector.x + mainVector.y * mainVector.y));
 

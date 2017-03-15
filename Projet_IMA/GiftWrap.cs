@@ -49,7 +49,7 @@ namespace Projet_IMA
                 if (leftmostPoint.Equals(lastPoint) || prodVec > 0 || (prodVec == 0 && (leftmostVector.Norme2() < tempVector.Norme2())))
                     leftmostPoint = points[i];
             }
-            convexHull.Add(leftmostPoint);
+            convexHull.Add(leftmostPoint);                // Ajout à l'enveloppe.
 
             Affichage.DrawPolChain(convexHull, Color.Red);
             Affichage.Show();
